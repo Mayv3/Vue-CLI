@@ -19,28 +19,24 @@
         </option>
       </select>
     </div>
-    <ul class="movies-grid" v-if="!loading">
-      <li class="movie-item" v-for="movie in filteredMovies" :key="movie.id">
-        <img
-          :src="`https://image.tmdb.org/t/p/w200${movie.poster_path}`"
-          :alt="movie.title"
-        />
-        <h2>{{ movie.title }}</h2>
-        <p>{{ truncateOverview(movie.overview) }}</p>
-        <p>Puntuación: {{ movie.vote_average.toFixed(2) }}</p>
-        <p class="date">{{ movie.release_date }}</p>
-        <router-link to="/movie-detail/" class="btn">Ver más</router-link>
-      </li>
+    <ul class="movies-grid" v-if="!loading && filteredMovies">
+      <MovieItem v-for="movie in filteredMovies" :movie="movie" />
     </ul>
     <div v-else class="loader">
-      <p>Cargando peliculas...</p>
+      <p v-if="loading">Cargando peliculas...</p>
+      <p v-if="!filteredMovies">No hay resultados</p>
     </div>
   </div>
 </template>
 
 <script>
+import MovieItem from "./MovieItem.vue";
+
 export default {
   name: "MovieList",
+  components: {
+    MovieItem,
+  },
   props: {
     movies: {
       type: Array,
@@ -84,15 +80,20 @@ export default {
         this.filteredMovies = [...this.movies];
       } else {
         const searchTerm = this.searchQuery.trim().toLowerCase();
-        this.filteredMovies = this.movies.filter((movie) =>
+        const result = this.movies.filter((movie) =>
           movie.title.toLowerCase().includes(searchTerm)
         );
+        //si tiene datos el array lo setea, sino lo deja en null
+        // asi evitamos tener que estar usando array.length todo el tiempo
+        result.length > 0
+          ? (this.filteredMovies = result)
+          : (this.filteredMovies = null);
       }
     },
     filterMovies() {
       let filtered = [...this.movies];
 
-      // Filtrar por género
+      // Filtrar por genero
       if (this.selectedGenre) {
         filtered = filtered.filter((movie) =>
           movie.genre_ids.includes(parseInt(this.selectedGenre))
@@ -105,7 +106,6 @@ export default {
           movie.title.toLowerCase().includes(searchTerm)
         );
       }
-
       this.filteredMovies = filtered;
     },
   },
@@ -113,7 +113,8 @@ export default {
 </script>
 <style scoped>
 .container {
-  width: 60%;
+  width: 80%;
+  max-width: 1300px;
   margin: 0px auto;
 }
 .movies-grid {
@@ -126,39 +127,7 @@ export default {
   width: 100%;
   margin: 40px auto;
 }
-.movie-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #333;
-  color: white;
-  border-radius: 20px;
-  width: 90%;
-  margin: 0px auto;
-}
-.movie-item img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
 
-.movie-item h2 {
-  font-size: 2rem;
-  min-height: 100px;
-  margin: 12px 0 8px;
-}
-
-.movie-item p {
-  padding: 0 1rem;
-  font-size: 16px;
-  margin: 4px 0;
-  min-height: 50px;
-}
-.movie-item .date {
-  font-size: 1.3rem;
-  margin: 4px 0;
-}
 input[type="text"] {
   width: 90%;
   padding: 10px;
@@ -202,19 +171,7 @@ select option {
   color: #333;
   padding: 10px;
 }
-.btn {
-  background-color: red;
-  color: white;
-  font-size: 16px;
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
-  border-radius: 0px 0px 12px 12px;
-  text-decoration: none;
-}
+
 input {
   width: 100% !important;
   margin: 1rem 0rem;
@@ -224,7 +181,7 @@ input {
   width: 100% !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .container {
     width: 95%;
   }
@@ -232,10 +189,6 @@ input {
     grid-template-columns: 1fr;
     width: 90%;
     gap: 30px;
-  }
-
-  .movie-item {
-    width: 100%;
   }
 
   input[type="text"],
@@ -247,18 +200,13 @@ input {
     height: 60px;
   }
 }
-@media (min-width: 600px) and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1024px) {
   .container {
     width: 95%;
   }
   .movies-grid {
     grid-template-columns: repeat(2, 1fr);
     width: 90%;
-    gap: 30px;
-  }
-
-  .movie-item {
-    width: 100%;
   }
 
   input[type="text"],

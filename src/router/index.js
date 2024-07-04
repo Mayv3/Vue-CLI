@@ -9,9 +9,10 @@ const routes = [
     component: Home,
   },
   {
-    path: "/movie-detail",
+    path: "/movie-detail/:id",
     name: "Detalle",
     component: MovieDetail,
+    props: true, // para poder pasar el id por params
   },
 ];
 

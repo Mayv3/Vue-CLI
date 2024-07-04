@@ -1,8 +1,16 @@
 <template>
-  <div id="nav" class="nav-bar">
-    <router-link to="/">Home</router-link>
-    <router-link to="/">Favs</router-link>
-  </div>
+  <nav id="nav" class="nav-bar">
+    <ul>
+      <li>
+        <router-link to="/"><i class="fa-solid fa-house"></i> Home</router-link>
+      </li>
+      <li>
+        <router-link to="/"
+          ><i class="fa-solid fa-star"></i> Favoritas</router-link
+        >
+      </li>
+    </ul>
+  </nav>
   <router-view />
 </template>
 
@@ -14,10 +22,21 @@ export default {
 
 <style scoped>
 #nav {
-  background-color: black;
+  background-color: transparent;
   position: fixed;
+  background-color: var(--background-color);
   width: 100%;
   top: 0;
-  color: #ffff;
+  padding: 1rem;
+}
+a {
+  font-weight: 600;
+  color: white;
+}
+ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
 }
 </style>

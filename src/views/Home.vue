@@ -53,7 +53,7 @@ export default {
 
 <style scoped>
 .home {
-  padding-top: 2rem;
+  padding-top: 4rem;
 }
 div.error {
   margin-top: 3rem;
