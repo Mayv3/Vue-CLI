@@ -32,7 +32,7 @@
         <router-link to="/movie-detail/" class="btn">Ver más</router-link>
       </li>
     </ul>
-    <div class="loader">
+    <div v-else class="loader">
       <p>Cargando peliculas...</p>
     </div>
   </div>
