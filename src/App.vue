@@ -1,16 +1,23 @@
 <template>
-  <div id="app">
-    <MovieList />
+  <div id="nav" class="nav-bar">
+    <router-link to="/">Home</router-link>
+    <router-link to="/">Favs</router-link>
   </div>
+  <router-view />
 </template>
 
 <script>
-import MovieList from './components/MovieList.vue';
-
 export default {
-  name: 'App',
-  components: {
-    MovieList
-  }
+  name: "App",
 };
 </script>
+
+<style scoped>
+#nav {
+  background-color: black;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  color: #ffff;
+}
+</style>

@@ -1,19 +1,16 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import MovieList from "src/components/MovieList.vue";
-import MovieList from "src/components/MovieDetail.vue";
-
-Vue.use(VueRouter);
+import { createRouter, createWebHistory } from "vue-router";
+import Home from "../views/Home.vue";
 
 const routes = [
   {
-    path: "/movies",
-    name: "Movies",
-    component: MovieList,
+    path: "/",
+    name: "Home",
+    component: Home,
   },
 ];
 
-const router = new VueRouter({
+const router = createRouter({
+  history: createWebHistory("/"),
   routes,
 });
 
