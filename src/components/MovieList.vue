@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div if:filteredMovies>
     <input
       type="text"
       v-model="searchQuery"
@@ -20,7 +20,7 @@
         </option>
       </select>
     </div>
-    <ul class="movies-grid">
+    <ul class="movies-grid" v-if="!loading">
       <li class="movie-item" v-for="movie in filteredMovies" :key="movie.id">
         <img
           :src="`https://image.tmdb.org/t/p/w200${movie.poster_path}`"
@@ -33,17 +33,27 @@
         <p>Puntuación: {{ movie.vote_average.toFixed(2) }}</p>
       </li>
     </ul>
+    <!-- mientras carga las pelis renderiza esto -->
+    <div class="loader" v-else>
+      <p>Cargando peliculas...</p>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "MovieList",
+  props: {
+    movies: {
+      type: Array,
+    },
+    loading: {
+      type: Boolean,
+    },
+  },
+
   data() {
     return {
-      movies: [],
       filteredMovies: [],
       searchQuery: "",
       selectedGenre: "",
@@ -55,22 +65,15 @@ export default {
       ],
     };
   },
-  mounted() {
-    this.fetchMovies();
-  },
-  methods: {
-    async fetchMovies() {
-      const apiKey = "3d99b0a7bfcc1d3dc8941f2d4fa9621c";
-      try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=es-ES`
-        );
-        this.movies = response.data.results.slice(0, 10);
-        this.filteredMovies = [...this.movies];
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-      }
+
+  //el watch es para que se actualice la data cuando se completa el fetch
+  watch: {
+    movies(newMovies) {
+      this.filteredMovies = [...newMovies];
     },
+  },
+
+  methods: {
     truncateOverview(overview) {
       const maxLength = 50;
       if (overview.length > maxLength) {
@@ -151,5 +154,13 @@ input[type="text"] {
   padding: 10px;
   font-size: 16px;
   margin-bottom: 16px;
+}
+
+div.loader {
+  margin-top: 3rem;
+}
+
+div.loader p {
+  font-size: 3rem;
 }
 </style>
