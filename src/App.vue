@@ -5,9 +5,7 @@
         <router-link to="/"><i class="fa-solid fa-house"></i> Home</router-link>
       </li>
       <li>
-        <router-link to="/"
-          ><i class="fa-solid fa-star"></i> Favoritas</router-link
-        >
+        <router-link to="/favorites">Favoritos</router-link>
       </li>
     </ul>
   </nav>

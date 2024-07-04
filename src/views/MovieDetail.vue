@@ -9,7 +9,9 @@
         <h2>{{ movie.title }}</h2>
         <p class="bold">Lanzamiento: {{ movie.release_date }}</p>
         <p>{{ movie.overview }}</p>
-        <button class="btn">Agregar a favoritas</button>
+        <button class="btn" @click="toggleFavorite">
+          {{ isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos' }}
+        </button>
       </div>
     </div>
   </section>
@@ -24,13 +26,20 @@ export default {
       movie: {},
       loading: false,
       error: false,
+      isFavorite: false,
     };
   },
   mounted() {
     this.fetchData();
+    this.checkFavorite();
+  },
+  watch: {
+    movie() {
+      this.checkFavorite();
+    }
   },
   methods: {
-    fetchData: async function () {
+    async fetchData() {
       const movieId = this.$route.params.id;
       const apiKey = "3d99b0a7bfcc1d3dc8941f2d4fa9621c";
       const language = "es";
@@ -40,7 +49,6 @@ export default {
           `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=${language}`
         );
         this.movie = data;
-        console.log(data);
       } catch (e) {
         console.log("Error conectando con la API: ", e);
         this.error = true;
@@ -48,6 +56,24 @@ export default {
         this.loading = false;
       }
     },
+    checkFavorite() {
+      const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      const result = favorites.find(favorite => favorite.id === this.movie.id);
+      result ? this.isFavorite = true : this.isFavorite = false;
+    },
+    toggleFavorite() {
+      let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      const index = favorites.findIndex(favorite => favorite.id === this.movie.id);
+
+      if (index === -1) {
+        favorites.push(this.movie);
+      } else {
+        favorites.splice(index, 1);
+      }
+
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      this.isFavorite = !this.isFavorite;
+    }
   },
 };
 </script>
@@ -85,6 +111,15 @@ section.movie-detail {
 
 .btn {
   border-radius: 5px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #0056b3;
 }
 
 @media (max-width: 1024px) {
