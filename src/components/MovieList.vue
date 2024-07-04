@@ -52,7 +52,7 @@ export default {
 
   data() {
     return {
-      filteredMovies: [],
+      filteredMovies: [...this.movies],
       searchQuery: "",
       selectedGenre: "",
       popularGenres: [
@@ -67,7 +67,7 @@ export default {
   //el watch es para que se actualice la data cuando se completa el fetch
   watch: {
     movies(newMovies) {
-      this.filteredMovies = newMovies;
+      this.filteredMovies = [...newMovies];
     },
   },
 

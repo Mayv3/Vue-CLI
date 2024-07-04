@@ -34,12 +34,14 @@ export default {
   mounted() {
     this.loadFavorites();
   },
+
   methods: {
     loadFavorites() {
       this.loading = true;
       const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
       favorites[0] ? (this.favoriteMovies = favorites) : null;
       this.loading = false;
+      console.log(this.favoriteMovies);
     },
   },
 };

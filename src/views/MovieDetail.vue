@@ -1,6 +1,6 @@
 <template>
   <section class="movie-detail">
-    <div v-if="movie" class="movie-info-container">
+    <div v-if="!error && !loading" class="movie-info-container">
       <img
         :src="'https://image.tmdb.org/t/p/w200' + movie.poster_path"
         :alt="movie.title"
@@ -27,7 +27,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      movie: null,
+      movie: {},
       loading: false,
       error: false,
       isFavorite: false,
@@ -52,7 +52,7 @@ export default {
         const response = await axios.get(
           `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=${language}`
         );
-        response.status == 200 ? (this.movie = response.data) : null;
+        this.movie = response.data;
       } catch (e) {
         console.log("Error conectando con la API: ", e);
         this.error = true;
@@ -60,6 +60,7 @@ export default {
         this.loading = false;
       }
     },
+
     checkFavorite() {
       const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
       const result = favorites.find(
@@ -67,6 +68,7 @@ export default {
       );
       result ? (this.isFavorite = true) : (this.isFavorite = false);
     },
+
     toggleFavorite() {
       let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
       const index = favorites.findIndex(
