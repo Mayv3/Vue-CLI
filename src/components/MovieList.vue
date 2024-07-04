@@ -4,12 +4,12 @@
 
     <input type="text" v-model="searchQuery" @input="searchMovies" placeholder="Buscar por título...">
 
-    <div>
-      <label for="genreFilter">Filtrar por Género:</label>
-      <select id="genreFilter" v-model="selectedGenre" @change="filterMovies">
-        <option value="">Todos</option>
-        <option v-for="genre in popularGenres" :value="genre.id" :key="genre.id">{{ genre.name }}</option>
-      </select>
+    <div class="genre-filter">
+        <label for="genreFilter">Filtrar por Género:</label>
+        <select id="genreFilter" v-model="selectedGenre" @change="filterMovies">
+          <option value="">Todos</option>
+          <option v-for="genre in popularGenres" :value="genre.id" :key="genre.id">{{ genre.name }}</option>
+        </select>
     </div>
     <ul class="movies-grid">
       <li class="movie-item" v-for="movie in filteredMovies" :key="movie.id">
@@ -25,7 +25,6 @@
 
 <script>
 import axios from 'axios';
-
 export default {
   data() {
     return {
@@ -62,6 +61,7 @@ export default {
       }
       return overview;
     },
+
     searchMovies() {
     if (this.searchQuery.trim() === '') {
       this.filteredMovies = [...this.movies];
@@ -72,10 +72,11 @@ export default {
       );
       }
     },
+    
     filterMovies() {
       let filtered = [...this.movies];
 
-      // Filtrar por género
+
       if (this.selectedGenre) {
         filtered = filtered.filter(movie =>
           movie.genre_ids.includes(parseInt(this.selectedGenre))
@@ -129,11 +130,89 @@ export default {
   font-size: 14px;
   margin: 4px 0;
 }
-
-input[type="text"] {
-  width: 100%;
-  padding: 10px;
+select {
   font-size: 16px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
   margin-bottom: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
+select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+select option {
+  padding: 8px;
+}
+
+input{
+  background-color: #270a0a;
+  color: #ffffff;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 20px;
+}
+input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+.genre-filter{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem 0rem;
+}
+.genre-filter select {
+  width: 60%;
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2em;
+  }
+
+  .genre-filter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .genre-filter label {
+    margin-bottom: 8px;
+  }
+
+  .genre-filter select {
+    width: 100%;
+  }
+
+  .movies-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .movie-item {
+    text-align: center;
+  }
+
+  input {
+    font-size: 16px;
+  }
+}
+
+
 </style>
