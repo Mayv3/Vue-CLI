@@ -45,7 +45,7 @@ export default {
   methods: {
     async fetchData() {
       const movieId = this.$route.params.id;
-      const apiKey = "3d99b0a7bfcc1d3dc8941f2d4fa9621";
+      const apiKey = "3d99b0a7bfcc1d3dc8941f2d4fa9621c";
       const language = "es";
       this.loading = true;
       try {
