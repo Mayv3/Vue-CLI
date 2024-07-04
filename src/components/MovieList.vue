@@ -6,7 +6,7 @@
       @input="searchMovies"
       placeholder="Buscar por título..."
     />
-    <div class="filters">
+    <div v-if="showGenreFilter" class="filters">
       <label for="genreFilter">Filtrar por Género:</label>
       <select id="genreFilter" v-model="selectedGenre" @change="filterMovies">
         <option value="">Todos</option>
@@ -44,6 +44,10 @@ export default {
     loading: {
       type: Boolean,
     },
+    showGenreFilter: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   data() {
@@ -63,7 +67,7 @@ export default {
   //el watch es para que se actualice la data cuando se completa el fetch
   watch: {
     movies(newMovies) {
-      this.filteredMovies = [...newMovies];
+      this.filteredMovies = newMovies;
     },
   },
 

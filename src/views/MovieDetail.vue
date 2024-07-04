@@ -1,6 +1,6 @@
 <template>
   <section class="movie-detail">
-    <div class="movie-info-container">
+    <div v-if="movie" class="movie-info-container">
       <img
         :src="'https://image.tmdb.org/t/p/w200' + movie.poster_path"
         :alt="movie.title"
@@ -10,9 +10,13 @@
         <p class="bold">Lanzamiento: {{ movie.release_date }}</p>
         <p>{{ movie.overview }}</p>
         <button class="btn" @click="toggleFavorite">
-          {{ isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos' }}
+          {{ isFavorite ? "Quitar de favoritos" : "Agregar a favoritos" }}
         </button>
       </div>
+    </div>
+    <div v-if="!movie" class="messages">
+      <p v-if="loading">Cargando peliculas...</p>
+      <p v-if="error">Algo salio mal :(</p>
     </div>
   </section>
 </template>
@@ -23,7 +27,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      movie: {},
+      movie: null,
       loading: false,
       error: false,
       isFavorite: false,
@@ -36,19 +40,19 @@ export default {
   watch: {
     movie() {
       this.checkFavorite();
-    }
+    },
   },
   methods: {
     async fetchData() {
       const movieId = this.$route.params.id;
-      const apiKey = "3d99b0a7bfcc1d3dc8941f2d4fa9621c";
+      const apiKey = "3d99b0a7bfcc1d3dc8941f2d4fa9621";
       const language = "es";
       this.loading = true;
       try {
-        const { data } = await axios.get(
+        const response = await axios.get(
           `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=${language}`
         );
-        this.movie = data;
+        response.status == 200 ? (this.movie = response.data) : null;
       } catch (e) {
         console.log("Error conectando con la API: ", e);
         this.error = true;
@@ -57,13 +61,17 @@ export default {
       }
     },
     checkFavorite() {
-      const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-      const result = favorites.find(favorite => favorite.id === this.movie.id);
-      result ? this.isFavorite = true : this.isFavorite = false;
+      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      const result = favorites.find(
+        (favorite) => favorite.id === this.movie.id
+      );
+      result ? (this.isFavorite = true) : (this.isFavorite = false);
     },
     toggleFavorite() {
-      let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-      const index = favorites.findIndex(favorite => favorite.id === this.movie.id);
+      let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      const index = favorites.findIndex(
+        (favorite) => favorite.id === this.movie.id
+      );
 
       if (index === -1) {
         favorites.push(this.movie);
@@ -71,9 +79,9 @@ export default {
         favorites.splice(index, 1);
       }
 
-      localStorage.setItem('favorites', JSON.stringify(favorites));
+      localStorage.setItem("favorites", JSON.stringify(favorites));
       this.isFavorite = !this.isFavorite;
-    }
+    },
   },
 };
 </script>
@@ -122,9 +130,14 @@ section.movie-detail {
   background-color: #0056b3;
 }
 
+div.messages p {
+  margin-top: 3rem;
+  font-size: 1.75rem;
+}
+
 @media (max-width: 1024px) {
   section.movie-detail {
-    padding: 2rem;
+    padding: 1.75rem;
   }
   .movie-info-container {
     flex-direction: column;
